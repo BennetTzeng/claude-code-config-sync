@@ -21,5 +21,10 @@ chmod +x "$CLAUDE_HOME/statusline-command.sh"
 # (this machine's $HOME/.claude, not the one baked in at commit time) — substitute it in.
 sed "s#__CLAUDE_HOME__#$CLAUDE_HOME#g" "$REPO_DIR/settings/settings.json" > "$CLAUDE_HOME/settings.json"
 
-echo "Installed settings.json and statusline-command.sh into $CLAUDE_HOME"
+# Install the /sync-settings custom command so future syncs are a one-word command,
+# not a remembered git incantation.
+mkdir -p "$CLAUDE_HOME/commands"
+cp "$REPO_DIR/commands/sync-settings.md" "$CLAUDE_HOME/commands/sync-settings.md"
+
+echo "Installed settings.json, statusline-command.sh, and /sync-settings into $CLAUDE_HOME"
 echo "Note: this does NOT touch .credentials.json or project-specific settings.local.json — those stay machine-local on purpose."

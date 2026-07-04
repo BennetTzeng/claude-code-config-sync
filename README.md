@@ -16,21 +16,36 @@ Works in Git Bash on Windows and in a normal terminal on macOS/Linux — Claude
 Code's own Bash tool already runs through Git Bash on Windows, so this matches
 that environment.
 
-## "Upgrading" later
+This also installs a `/sync-settings` custom Claude Code command (see below) —
+after the first manual install, every future sync is just typing that in chat.
 
-Whenever you change a setting on one machine and want it everywhere else:
+## "Upgrading" later — just say it
+
+Once installed, open Claude Code on any machine and type:
+
+```
+/sync-settings
+```
+
+or just tell it in plain language, e.g. "sync my claude settings" — the
+installed command handles pulling the latest config and running the installer,
+or pushing local changes if you ask it to. You never need to remember the
+actual git commands below; they're only here for reference.
+
+<details>
+<summary>What /sync-settings actually runs</summary>
 
 ```bash
-# on the machine where you made the change
-cd claude-code-config-sync
-cp ~/.claude/settings.json settings/settings.json   # then manually re-add the __CLAUDE_HOME__ placeholder, see below
-git add -A && git commit -m "update settings" && git push
-
-# on every other machine
+# pulling latest onto this machine
 cd claude-code-config-sync
 git pull
 bash install.sh
+
+# pushing a local change to share with other machines
+cp ~/.claude/settings.json settings/settings.json   # then manually re-add the __CLAUDE_HOME__ placeholder
+git add -A && git commit -m "update settings" && git push
 ```
+</details>
 
 ## What's synced, and what's deliberately NOT
 
