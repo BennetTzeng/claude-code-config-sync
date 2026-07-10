@@ -7,13 +7,20 @@ fi
 VAULT="/c/Projects/Academic/Master's Research/Obsidian Vault"
 cd "$VAULT" 2>/dev/null || { echo '{}'; exit 0; }
 git pull --quiet origin master >/dev/null 2>&1
-INBOX="Tools/relay/inbox-${CLAUDE_RELAY_MACHINE}.md"
-REMINDER="Cross-machine relay: this machine is '${CLAUDE_RELAY_MACHINE}'. Before ending this session, if anything happened that other computers (Acer/Mac Mini/HP - whichever aren't this one) should know about, write it to Tools/relay/inbox-<machine>.md in the vault repo - it will auto-commit and push when the session ends."
-if [ -f "$INBOX" ] && grep -q '^## New' "$INBOX"; then
-  NEWCONTENT=$(awk '/^## New/{f=1;next}/^## Read/{f=0}f' "$INBOX" | grep -v '^[[:space:]]*$' | grep -v '(nothing yet)')
-  if [ -n "$NEWCONTENT" ]; then
-    printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Pulled the vault repo and found unread content in %s under the New section - read that file now before doing anything else. %s"}}' "$INBOX" "$REMINDER"
-    exit 0
-  fi
+
+extract_new() {
+  awk '/^## New/{f=1;next}/^## Read/{f=0}f' "$1" 2>/dev/null | grep -v '^[[:space:]]*$' | grep -v '(nothing yet)'
+}
+
+MSG=""
+OWN_INBOX="Tools/relay/inbox-${CLAUDE_RELAY_MACHINE}.md"
+if [ -f "$OWN_INBOX" ] && [ -n "$(extract_new "$OWN_INBOX")" ]; then
+  MSG="Unread content in ${OWN_INBOX} under the New section - read it now before doing anything else. "
 fi
-printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}' "$REMINDER"
+PUBLIC_INBOX="Tools/relay/inbox-public.md"
+if [ -f "$PUBLIC_INBOX" ] && [ -n "$(extract_new "$PUBLIC_INBOX")" ]; then
+  MSG="${MSG}Unread content in ${PUBLIC_INBOX} (infra-wide announcement) under the New section - read it too. "
+fi
+
+REMINDER="Cross-machine relay: this machine is '${CLAUDE_RELAY_MACHINE}'. Before ending this session, if anything happened that other computers should know about, write it to Tools/relay/inbox-<machine>.md (or inbox-public.md for infra-wide changes) in the vault repo - it will auto-commit and push when the session ends."
+printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s%s"}}' "$MSG" "$REMINDER"
