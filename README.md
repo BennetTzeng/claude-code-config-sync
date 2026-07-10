@@ -76,6 +76,24 @@ has to be set separately per machine — if it were in the synced
 `settings.json`, every machine would think it was the same one. Until this is
 set, the hooks silently no-op (no error, just do nothing).
 
+## Desktop shortcuts to the research panels
+
+On Windows machines, `install.sh` automatically creates two desktop shortcuts
+(`Research Dashboard.lnk`, `Vault Viewer.lnk`) pointing at
+`C:\Projects\Tools\rendered\dashboard.html` and `C:\Projects\Tools\vault-viewer.html`,
+skipping either one that doesn't exist on that machine.
+
+**On macOS, this isn't automated** — the project path isn't a known constant across
+machines the way `C:\Projects\Tools\` is on Windows, and this hasn't been tested on
+an actual Mac. To create the equivalent manually:
+
+```bash
+ln -s "/path/to/your/Tools/rendered/dashboard.html" ~/Desktop/"Research Dashboard.html"
+ln -s "/path/to/your/Tools/vault-viewer.html" ~/Desktop/"Vault Viewer.html"
+```
+
+Double-clicking the resulting alias in Finder should open it in the default browser.
+
 ## What's synced, and what's deliberately NOT
 
 **Synced:**

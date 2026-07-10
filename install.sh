@@ -35,3 +35,28 @@ chmod +x "$CLAUDE_HOME/hooks/relay-session-start.sh" "$CLAUDE_HOME/hooks/relay-s
 echo "Installed settings.json, statusline-command.sh, /sync-settings, and relay hooks into $CLAUDE_HOME"
 echo "Note: this does NOT touch .credentials.json or project-specific settings.local.json — those stay machine-local on purpose."
 echo "Note: the relay hooks need a one-time per-machine env var to know which inbox is theirs — see README for CLAUDE_RELAY_MACHINE."
+
+# Desktop shortcuts to the two research panels, so they're one click away instead of
+# needing to be re-found each time. Only auto-created on Windows, where the vault's
+# Tools/ path is a known convention (C:\Projects\Tools\...). On macOS the project path
+# isn't standardized across machines, so this is a manual step instead (see README).
+if command -v powershell.exe >/dev/null 2>&1; then
+  DASHBOARD_PATH='C:\Projects\Tools\rendered\dashboard.html'
+  VIEWER_PATH='C:\Projects\Tools\vault-viewer.html'
+  powershell.exe -NoProfile -Command "
+    \$desktop = [Environment]::GetFolderPath('Desktop')
+    \$WshShell = New-Object -ComObject WScript.Shell
+    if (Test-Path '$DASHBOARD_PATH') {
+      \$s = \$WshShell.CreateShortcut(\"\$desktop\Research Dashboard.lnk\")
+      \$s.TargetPath = '$DASHBOARD_PATH'
+      \$s.IconLocation = 'C:\Windows\System32\imageres.dll,174'
+      \$s.Save()
+    }
+    if (Test-Path '$VIEWER_PATH') {
+      \$s2 = \$WshShell.CreateShortcut(\"\$desktop\Vault Viewer.lnk\")
+      \$s2.TargetPath = '$VIEWER_PATH'
+      \$s2.IconLocation = 'C:\Windows\System32\imageres.dll,174'
+      \$s2.Save()
+    }
+  " >/dev/null 2>&1 && echo "Created desktop shortcuts: Research Dashboard, Vault Viewer (skipped any whose target file doesn't exist on this machine)."
+fi
