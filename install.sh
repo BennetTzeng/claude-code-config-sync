@@ -26,5 +26,12 @@ sed "s#__CLAUDE_HOME__#$CLAUDE_HOME#g" "$REPO_DIR/settings/settings.json" > "$CL
 mkdir -p "$CLAUDE_HOME/commands"
 cp "$REPO_DIR/commands/sync-settings.md" "$CLAUDE_HOME/commands/sync-settings.md"
 
-echo "Installed settings.json, statusline-command.sh, and /sync-settings into $CLAUDE_HOME"
+# Cross-machine relay hook scripts (checks/writes Tools/relay/inbox-*.md in the vault repo).
+mkdir -p "$CLAUDE_HOME/hooks"
+cp "$REPO_DIR/hooks/relay-session-start.sh" "$CLAUDE_HOME/hooks/relay-session-start.sh"
+cp "$REPO_DIR/hooks/relay-session-end.sh" "$CLAUDE_HOME/hooks/relay-session-end.sh"
+chmod +x "$CLAUDE_HOME/hooks/relay-session-start.sh" "$CLAUDE_HOME/hooks/relay-session-end.sh"
+
+echo "Installed settings.json, statusline-command.sh, /sync-settings, and relay hooks into $CLAUDE_HOME"
 echo "Note: this does NOT touch .credentials.json or project-specific settings.local.json — those stay machine-local on purpose."
+echo "Note: the relay hooks need a one-time per-machine env var to know which inbox is theirs — see README for CLAUDE_RELAY_MACHINE."

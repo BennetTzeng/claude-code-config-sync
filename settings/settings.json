@@ -1,7 +1,6 @@
 {
   "theme": "dark",
   "permissions": {
-    "defaultMode": "default",
     "allow": [
       "Bash(start *.html)",
       "Bash(start *.pdf)",
@@ -28,6 +27,30 @@
       "Bash(rm -r *)",
       "Bash(rm -R *)",
       "Bash(rm -f *)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/relay-session-start.sh\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/relay-session-end.sh\"",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   },
   "statusLine": {

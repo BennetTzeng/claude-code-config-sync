@@ -47,14 +47,50 @@ git add -A && git commit -m "update settings" && git push
 ```
 </details>
 
+## Cross-machine relay (Tools/relay/ in the vault repo)
+
+Two hook scripts (`hooks/relay-session-start.sh`, `hooks/relay-session-end.sh`)
+are installed into `~/.claude/hooks/` and wired up in `settings.json`'s
+`SessionStart`/`SessionEnd` hooks. Together they make the vault's
+`Tools/relay/inbox-*.md` system automatic:
+- **SessionStart**: pulls the vault repo and surfaces this machine's own inbox
+  file if there's unread content, plus a standing reminder to write a note for
+  other machines before ending the session if anything relay-worthy happened.
+- **SessionEnd**: if the session wrote anything into `Tools/relay/`, commits
+  and pushes it automatically.
+
+**Required one-time step per machine (NOT synced on purpose):** set an
+environment variable telling the scripts which inbox is "this machine's own" —
+
+```bash
+# Windows (persists across reboots)
+powershell -NoProfile -Command "[Environment]::SetEnvironmentVariable('CLAUDE_RELAY_MACHINE','acer','User')"
+
+# macOS/Linux (add to ~/.zshrc or ~/.bashrc)
+export CLAUDE_RELAY_MACHINE=macmini
+```
+
+Use `hp`, `acer`, or `macmini` matching that machine's actual inbox filename
+in the vault repo (`inbox-hp.md`, `inbox-acer.md`, `inbox-macmini.md`). This
+has to be set separately per machine — if it were in the synced
+`settings.json`, every machine would think it was the same one. Until this is
+set, the hooks silently no-op (no error, just do nothing).
+
 ## What's synced, and what's deliberately NOT
 
 **Synced:**
-- `settings.json` — theme, permission allow/deny lists, statusline config
+- `settings.json` — theme, permission allow/deny lists, statusline config,
+  relay hooks (see above)
 - `statusline-command.sh` — the statusline script itself
+- `hooks/relay-session-start.sh`, `hooks/relay-session-end.sh` — the relay
+  hook scripts themselves
 
 **Deliberately excluded (stays machine-local):**
 - `.credentials.json` — OAuth tokens. Never commit this to any repo, ever.
+- `permissions.defaultMode` / `skipDangerousModePermissionPrompt` — whether a
+  machine runs in bypass-permissions mode is a deliberate, explicit decision
+  made per-machine, not something that should silently propagate from one
+  computer's settings.json to another's.
 - Project-level `.claude/settings.local.json` — these accumulate
   machine-specific one-off permission grants (exact local file paths,
   which Python/conda install you have, etc.) that don't make sense on a
