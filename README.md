@@ -53,9 +53,11 @@ Two hook scripts (`hooks/relay-session-start.sh`, `hooks/relay-session-end.sh`)
 are installed into `~/.claude/hooks/` and wired up in `settings.json`'s
 `SessionStart`/`SessionEnd` hooks. Together they make the vault's
 `Tools/relay/inbox-*.md` system automatic:
-- **SessionStart**: pulls the vault repo and surfaces this machine's own inbox
-  file if there's unread content, plus a standing reminder to write a note for
-  other machines before ending the session if anything relay-worthy happened.
+- **SessionStart**: opens Casper's Prism LaTeX editor (prism.openai.com) in the
+  default browser (best-effort — never blocks the hook if it fails), then pulls
+  the vault repo and surfaces this machine's own inbox file if there's unread
+  content, plus a standing reminder to write a note for other machines before
+  ending the session if anything relay-worthy happened.
 - **SessionEnd**: if the session wrote anything into `Tools/relay/`, commits
   and pushes it automatically.
 

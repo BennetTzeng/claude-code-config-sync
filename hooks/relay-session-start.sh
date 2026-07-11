@@ -1,4 +1,13 @@
 #!/bin/bash
+# Open Casper's Prism LaTeX editor (prism.openai.com) alongside every session --
+# this used to be a daily manual "paste me the URL" step; opening it here removes
+# that. Best-effort: never blocks or fails the hook if the browser can't be found.
+case "$(uname -s 2>/dev/null)" in
+  MINGW*|MSYS*|CYGWIN*) cmd.exe /c start "" "https://prism.openai.com/" >/dev/null 2>&1 & ;;
+  Darwin) open "https://prism.openai.com/" >/dev/null 2>&1 & ;;
+  *) command -v xdg-open >/dev/null 2>&1 && xdg-open "https://prism.openai.com/" >/dev/null 2>&1 & ;;
+esac
+
 # Requires CLAUDE_RELAY_MACHINE env var set per-machine (e.g. hp, acer, macmini) - not synced, set once locally.
 if [ -z "$CLAUDE_RELAY_MACHINE" ]; then
   echo '{}'
