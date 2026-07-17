@@ -3,7 +3,7 @@
 if [ -z "$CLAUDE_RELAY_MACHINE" ]; then
   exit 0
 fi
-VAULT="/c/Projects/Academic/Master's Research/Obsidian Vault"
+VAULT="${CLAUDE_RELAY_VAULT_PATH:-/c/Projects/Academic/Master's Research/Obsidian Vault}"
 cd "$VAULT" 2>/dev/null || exit 0
 if [ -n "$(git status --porcelain -- Tools/relay/ 2>/dev/null)" ]; then
   git add Tools/relay/

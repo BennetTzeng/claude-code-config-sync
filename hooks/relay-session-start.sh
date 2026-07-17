@@ -13,7 +13,7 @@ if [ -z "$CLAUDE_RELAY_MACHINE" ]; then
   echo '{}'
   exit 0
 fi
-VAULT="/c/Projects/Academic/Master's Research/Obsidian Vault"
+VAULT="${CLAUDE_RELAY_VAULT_PATH:-/c/Projects/Academic/Master's Research/Obsidian Vault}"
 cd "$VAULT" 2>/dev/null || { echo '{}'; exit 0; }
 git pull --quiet origin master >/dev/null 2>&1
 
