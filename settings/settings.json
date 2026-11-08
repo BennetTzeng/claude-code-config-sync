@@ -51,10 +51,23 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/cache-cold-guard.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
     "type": "command",
     "command": "bash __CLAUDE_HOME__/statusline-command.sh"
-  }
+  },
+  "promptCacheTtl": "1h",
+  "subagentPromptCacheTtl": "1h"
 }

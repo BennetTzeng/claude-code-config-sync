@@ -25,11 +25,13 @@ sed "s#__CLAUDE_HOME__#$CLAUDE_HOME#g" "$REPO_DIR/settings/settings.json" > "$CL
 # not a remembered git incantation.
 mkdir -p "$CLAUDE_HOME/commands"
 cp "$REPO_DIR/commands/sync-settings.md" "$CLAUDE_HOME/commands/sync-settings.md"
+cp "$REPO_DIR/commands/handoff.md" "$CLAUDE_HOME/commands/handoff.md"
 
 # Cross-machine relay hook scripts (checks/writes Tools/relay/inbox-*.md in the vault repo).
 mkdir -p "$CLAUDE_HOME/hooks"
 cp "$REPO_DIR/hooks/relay-session-start.sh" "$CLAUDE_HOME/hooks/relay-session-start.sh"
 cp "$REPO_DIR/hooks/relay-session-end.sh" "$CLAUDE_HOME/hooks/relay-session-end.sh"
+cp "$REPO_DIR/hooks/cache-cold-guard.sh" "$CLAUDE_HOME/hooks/cache-cold-guard.sh"
 chmod +x "$CLAUDE_HOME/hooks/relay-session-start.sh" "$CLAUDE_HOME/hooks/relay-session-end.sh"
 
 echo "Installed settings.json, statusline-command.sh, /sync-settings, and relay hooks into $CLAUDE_HOME"
